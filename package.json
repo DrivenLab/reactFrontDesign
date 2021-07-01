@@ -1,0 +1,30 @@
+{
+  "name": "react-native",
+  "version": "1.0.0",
+  "description": "React Native for Web starter template",
+  "keywords": [],
+  "main": "src/index.js",
+  "dependencies": {
+    "@react-navigation/native": "5.9.4",
+    "@react-navigation/stack": "5.14.5",
+    "native-base": "3.0.3",
+    "react": "17.0.*",
+    "react-dom": "17.0.*",
+    "react-native": "0.64.2",
+    "react-native-safe-area-context": "3.2.0",
+    "react-native-screens": "3.4.0",
+    "react-native-svg": "12.1.1",
+    "react-native-vector-icons": "8.1.0",
+    "react-native-web": "0.17.0",
+    "react-scripts": "3.4.1",
+    "styled-components": "5.3.0",
+    "styled-system": "5.1.5"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test --env=jsdom",
+    "eject": "react-scripts eject"
+  }
+}
