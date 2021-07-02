@@ -12,20 +12,22 @@ import {
   Center,
   FormControl,
   Stack,
-  Box
+  Box,
+  ArrowForwardIcon
 } from "native-base";
 
 import { StyleSheet, View } from "react-native";
 
-import Icon from "react-native-vector-icons/MaterialIcons";
-import { color } from "styled-system";
+import Icon from "react-native-vector-icons/AntDesign";
+import { color, textAlign } from "styled-system";
 import Register from "./RegisterPage";
 
 import Http from "../libs/http";
 
-const sendLogin = async ({ email, password }) => {
-  // return await Http.post('url', { email, password });
+const sendLogin = async ({ phoneNumber }) => {
+  // return await Http.post('url', { phoneNumber });
   await new Promise((resolve, reject) => {
+    //Enviar codigo de verificacion a la api megal para WHATSAPP
     setTimeout((_) => {
       console.log("INICIANDO SESIÓN...");
       resolve({
@@ -39,8 +41,7 @@ const sendLogin = async ({ email, password }) => {
 };
 
 const Login = ({ navigation }) => {
-  const [email, setEmail] = React.useState("");
-  const [password, setPassword] = React.useState("");
+  const [phoneNumber, setPhoneNumber] = React.useState("");
   const [sendingLogin, setSendingLogin] = React.useState(false);
   const [loginError, setLoginError] = React.useState("");
   /*
@@ -52,99 +53,102 @@ const Login = ({ navigation }) => {
   */
 
   const validateLogin = () => {
-    return email.length > 0 && password.length > 0;
+    return phoneNumber.length > 0;
   };
 
   const handleSendLogin = async () => {
     setLoginError("");
     if (validateLogin()) {
       setSendingLogin(true);
-      await sendLogin(email, password);
+      const response = await sendLogin(phoneNumber);
+      // TODO: verificar response
       setSendingLogin(false);
+      navigation.navigate("RegisterPage");
     } else {
-      setLoginError("Ingrese su nombre de usuario y contraseña");
+      setLoginError("Ingrese su numero de celular para continuar");
     }
   };
 
   return (
-    <NativeBaseProvider>
-      <View style={styles.container}>
-        <FormControl>
-          <Stack space={4} p={4} w="100%">
-            <FormControl.Label>MEGAL</FormControl.Label>
-
-            {/* INPUT EMAIL */}
-
-            <Box>
-              <FormControl.Label>Correo electrónico</FormControl.Label>
-              <Input
-                InputLeftElement={<Icon name="person" size={30} color="#000" />}
-                variant="filled"
-                value={email}
-                onChangeText={setEmail}
-                type="email"
-                placeholder="exemplo@megal.com"
-              />
-            </Box>
-
-            {/* INPUT PASSWORD */}
-
-            <Box>
-              <FormControl.Label style={{ marginTop: 10 }}>
-                Contraseña
-              </FormControl.Label>
-              <Input
-                InputLeftElement={
-                  <Icon
-                    name="key"
-                    style={{ padding: 5 }}
-                    size={30}
-                    color="#000"
-                  />
-                }
-                InputRightElement={
-                  <Icon
-                    name="view"
-                    style={{ padding: 5 }}
-                    size={30}
-                    color="#000"
-                  />
-                }
-                variant="filled"
-                value={password}
-                onChangeText={setPassword}
-                type="password"
-                placeholder="**********"
-              />
-            </Box>
-
-            {/* LOGIN BUTTON */}
-
-            <Button
-              square
-              block
-              style={{ marginTop: 10 }}
-              onPress={handleSendLogin}
-            >
-              <Text style={{ color: "#FFF" }}>
-                {sendingLogin ? "INICIANDO..." : "INICIAR SESIÓN"}
-              </Text>
-            </Button>
-
-            {/* ERROR MESSAGE */}
-
-            <Text style={{ color: "#F00" }}>{loginError}</Text>
-          </Stack>
-        </FormControl>
-
-        <Text
-          style={styles.register}
-          onPress={() => navigation.navigate("RegisterPage")}
+    <View style={styles.container}>
+      <FormControl>
+        <Stack
+          space={4}
+          p={4}
+          w="100%"
+          display="flex"
+          flexDirection="column"
+          justifyContent="center"
+          alignItems="center"
         >
-          REGISTRARSE
-        </Text>
-      </View>
-    </NativeBaseProvider>
+          <Text fontSize={26} fontWeight="bold">
+            ¡Bienvenido a ---!
+          </Text>
+
+          {/* INPUT PHONE */}
+
+          <Box
+            w="100%"
+            display="flex"
+            flexDirection="column"
+            alignItems="center"
+          >
+            <FormControl.Label>
+              Ingresa tu número de celular para continuar
+            </FormControl.Label>
+
+            <Input
+              variant="rounded"
+              value={phoneNumber}
+              onChangeText={setPhoneNumber}
+              type="number"
+              placeholder="Ej: 094 123 456"
+              size="lg"
+              py={14}
+              px={7}
+              w="100%"
+              h="53px"
+              mt={2}
+              borderColor="#000"
+              color="white"
+              border={0}
+              backgroundColor="#3c3c3c"
+              _focus={{
+                backgroundColor: "#121212"
+              }}
+            />
+          </Box>
+
+          {/* LOGIN BUTTON */}
+
+          <Button
+            square
+            block
+            w="100%"
+            h="53px"
+            bgColor="#52AF32"
+            borderRadius={50}
+            onPress={handleSendLogin}
+          >
+            <Box
+              display="flex"
+              flexDirection="row"
+              justifyContent="center"
+              alignItems="center"
+            >
+              <Text color="white" fontWeight="bold" fontSize={18}>
+                {sendingLogin ? "Verificando..." : "Enviar código por WhastApp"}
+              </Text>
+              {!sendingLogin && <ArrowForwardIcon px={2} color="#fff" />}
+            </Box>
+          </Button>
+
+          {/* ERROR MESSAGE */}
+
+          <Text color="red">{loginError}</Text>
+        </Stack>
+      </FormControl>
+    </View>
   );
 };
 
@@ -153,7 +157,7 @@ const styles = StyleSheet.create({
     height: 46,
     backgroundColor: "rgba(0, 0, 0, 0.2)",
     paddingLeft: 16,
-    color: "#000"
+    color: "#3C3C3C"
   },
   textInputAndroid: {
     borderBottomWidth: 2,
@@ -166,15 +170,14 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: "column",
     justifyContent: "center",
-    flex: 1
+    flex: 1,
+    backgroundColor: "#FFF"
   },
   register: {
     textAlign: "center",
-    color: "#000",
-    marginTop: 80,
+    color: "#FFF",
     fontWeight: "bold",
-    fontSize: 14,
-    textTransform: "uppercase"
+    fontSize: 18
   }
 });
 
