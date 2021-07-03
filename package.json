@@ -1,7 +1,7 @@
 {
-  "name": "react-native",
+  "name": "react-native-driven",
   "version": "1.0.0",
-  "description": "React Native for Web starter template",
+  "description": "",
   "keywords": [],
   "main": "src/index.js",
   "dependencies": {
