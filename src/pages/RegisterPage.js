@@ -23,7 +23,7 @@ import Http from "../libs/http";
 const sendCodeVerification = async ({ code }) => {
   // return await Http.post('url', { code });
   return await new Promise((resolve, reject) => {
-    //Enviar codigo de verificacion a la api megal para WHATSAPP
+    // Enviar codigo de verificacion a la api megal para WHATSAPP
     setTimeout((_) => {
       console.log("VERIFICANDO CÓDIGO DE VERIFICACIÓN...");
       resolve({
@@ -53,7 +53,6 @@ const Register = ({ navigation }) => {
   const [resendTimerId, setResendTimerId] = React.useState(null);
   const [canResendCode, setCanResendCode] = React.useState(false);
 
-  /** Acualizar la variable isValidCode a medida que el usuario carga los datos */
   React.useEffect(
     (_) => {
       setIsValidCode(code.length === codeLenght);
@@ -113,7 +112,7 @@ const Register = ({ navigation }) => {
     <View style={styles.centerContainer}>
       <FormControl>
         <Stack
-          space={4}
+          space={2}
           w="100%"
           p={4}
           style={styles.centerContainer}

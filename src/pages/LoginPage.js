@@ -79,7 +79,7 @@ const Login = ({ navigation }) => {
     <View style={styles.container}>
       <FormControl>
         <Stack
-          space={4}
+          space={2}
           p={4}
           w="100%"
           display="flex"
