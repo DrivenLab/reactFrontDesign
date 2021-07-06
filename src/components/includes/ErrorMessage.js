@@ -19,15 +19,27 @@ import {
 } from "native-base";
 
 import { StyleSheet, View } from "react-native";
+import { shadow, inputStyle, flex } from "../../res/styles";
+import { colors, textColors, bgColors } from "../res/colors";
 
 export default ({ error, handleClose }) => {
   return (
-    <Box position="relative" width="104%" zIndex={1000}>
+    <Box
+      position="absolute"
+      height={20}
+      bottom={0}
+      width="100%"
+      zIndex={1000}
+      bgColor={colors.primary}
+      style={flex("row", "center")}
+    >
       {!!error && (
         <Box
+          width="90%"
           shadow={8}
           position="absolute"
-          top="-5px"
+          top="-50%"
+          lefto="0px"
           bgColor="#ed6a4e"
           borderRadius={10}
           display="flex"

@@ -15,9 +15,13 @@ import {
   Box,
   ArrowForwardIcon
 } from "native-base";
+import ValidationButton from "../components/includes/ValidationButton";
 import ErrorMessage from "../components/includes/ErrorMessage";
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, View, TextInput } from "react-native";
 import Http from "../libs/http";
+import { colors, textColors, bgColors } from "../res/colors";
+import { shadow, inputStyle } from "../res/styles";
+import BackWaves from "../components/includes/BackWaves";
 
 /** Envía una solicitud de login a través de http y espera una respuesta. */
 const sendCodeVerification = async ({ code }) => {
@@ -96,10 +100,9 @@ const Register = ({ navigation }) => {
       if (response.success) {
         navigation.navigate("LoginPage");
         setCode("");
-      } else
-        setVerifyError(
-          "Error en el código ingresado, por favor vuelva a intentarlo."
-        );
+      } else {
+        navigation.navigate("HomePage");
+      }
       setVerifying(false);
     } else {
       setVerifyError(
@@ -140,61 +143,24 @@ const Register = ({ navigation }) => {
 
           {/* Code input */}
 
-          <Input
-            variant="rounded"
+          <TextInput
+            maxLength={codeLenght}
             value={code}
             onChangeText={setCode}
             type="number"
             placeholder="****"
-            maxLength={codeLenght}
-            size="lg"
-            py={14}
-            px={7}
-            w="100%"
-            h="53px"
-            mt={2}
-            textAlign="center"
-            letterSpacing={10}
-            borderColor="#000"
-            color="white"
-            border={0}
-            backgroundColor="#3c3c3c"
-            _focus={{
-              backgroundColor: "#121212"
-            }}
+            style={inputStyle(true, 10)}
           />
 
           {/* Confirm button */}
 
-          <Button
-            w="100%"
-            h="53px"
-            bgColor={isValidCode ? "#52AF32" : "#888"}
-            borderRadius={50}
+          <ValidationButton
+            title="Enviar código a WhastApp"
+            isValid={isValidCode}
+            loading={verifying}
+            loadingMsg="Enviando..."
             onPress={handleVerifyCode}
-            isLoading={verifying}
-            isLoadingText="Enviando..."
-            _text={{
-              color: "white",
-              fontWeight: "bold",
-              fontSize: 18
-            }}
-          >
-            <Box
-              display="flex"
-              flexDirection="row"
-              justifyContent="center"
-              alignItems="center"
-              _text={{
-                color: "white",
-                fontWeight: "bold",
-                fontSize: 18
-              }}
-            >
-              Verificar código
-              {!verifying && <ArrowForwardIcon px={1} size={7} color="#fff" />}
-            </Box>
-          </Button>
+          />
 
           {/* Error message */}
 
@@ -254,6 +220,9 @@ const Register = ({ navigation }) => {
           </Stack>
         </Stack>
       </FormControl>
+      {/* WAVES */}
+
+      {BackWaves()}
     </View>
   );
 };
@@ -264,8 +233,7 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     flexDirection: "column",
     justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "#FFF"
+    alignItems: "center"
   }
 });
 

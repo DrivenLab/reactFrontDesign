@@ -7,7 +7,6 @@ import {
   Text,
   H1,
   Input,
-  Item,
   NativeBaseProvider,
   Center,
   FormControl,
@@ -18,12 +17,22 @@ import {
   CloseIcon
 } from "native-base";
 
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, View, TextInput } from "react-native";
 import Icon from "react-native-vector-icons/AntDesign";
 import { color, textAlign } from "styled-system";
 import Register from "./RegisterPage";
 import Http from "../libs/http";
 import ErrorMessage from "../components/includes/ErrorMessage";
+import BackWaves from "../components/includes/BackWaves";
+import ValidationButton from "../components/includes/ValidationButton";
+import { colors, textColors, bgColors } from "../res/colors";
+import { shadow, inputStyle, flex } from "../res/styles";
+import PhoneInput from "react-phone-input-2";
+import {
+  formatPhoneNumber,
+  formatPhoneNumberIntl,
+  isValidPhoneNumber
+} from "react-phone-number-input";
 
 /** Envía una solicitud de login a través de http y espera una respuesta. */
 const sendLogin = async ({ phoneNumber }) => {
@@ -43,18 +52,14 @@ const Login = ({ navigation }) => {
   /** Estado de la aplicación (enviando solicitud de login) */
   const [sendingLogin, setSendingLogin] = React.useState(false);
   /** Verifica que el número de celular ingresado cumpla con los criterios */
-  const [isValidPhoneNumber, setIsValidPhoneNumber] = React.useState(false);
+  const [canSendCode, setCanSendCode] = React.useState(false);
   /** Mensaje de error ocurrido al intentar hacer login */
   const [loginError, setLoginError] = React.useState("");
-  /** Cantidad de números necesarios para obtener un número de celular móvil */
-  const [phoneNumberLenght] = React.useState(9);
 
-  const [position, setPosition] = React.useState("auto");
-
-  /** Acualizar la variable isValidPhoneNumber a medida que el usuario carga los datos */
+  /** Acualizar la variable canSendCode a medida que el usuario carga los datos */
   React.useEffect(
     (_) => {
-      setIsValidPhoneNumber(phoneNumber.length === phoneNumberLenght); // TODO: 9??
+      setCanSendCode(!!phoneNumber && isValidPhoneNumber("+" + phoneNumber));
     },
     [phoneNumber]
   );
@@ -63,7 +68,7 @@ const Login = ({ navigation }) => {
   const handleSendLogin = async () => {
     if (sendingLogin) return;
     setLoginError("");
-    if (isValidPhoneNumber) {
+    if (canSendCode) {
       setSendingLogin(true);
       const response = await sendLogin(phoneNumber);
       if (response.success) navigation.navigate("RegisterPage");
@@ -76,30 +81,31 @@ const Login = ({ navigation }) => {
   };
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { position: "relative" }]}>
       <FormControl>
         <Stack
-          space={2}
-          p={4}
+          space={0}
+          p={5}
           w="100%"
-          display="flex"
-          flexDirection="column"
-          justifyContent="center"
-          alignItems="center"
+          style={flex("column", "center")}
           position="relative"
           top="-8%"
         >
+          {/* HEADER */}
+
           <Box
-            width="50vw"
-            height="50vw"
-            borderRadius="100%"
+            maxWidth={200}
+            minWidth={200}
+            maxHeight={200}
+            minHeight={200}
+            borderRadius={100}
             bgColor="#aaa"
             display="flex"
             justifyContent="center"
             alignItems="center"
           >
-            <Text color="#fff" fontSize={30} fontWeight="bold">
-              LOGO
+            <Text style={textColors.white} fontSize={30} fontWeight="bold">
+              Logo
             </Text>
           </Box>
 
@@ -109,74 +115,77 @@ const Login = ({ navigation }) => {
 
           {/* INPUT PHONE */}
 
-          <FormControl.Label textAlign="center" maxWidth="80%">
-            Por favor, ingresa tu número de celular para continuar.
-          </FormControl.Label>
+          <Text>Tu número de celular</Text>
 
-          <Input
-            variant="rounded"
-            maxLength={phoneNumberLenght}
-            value={phoneNumber}
-            onChangeText={setPhoneNumber}
-            type="number"
-            letterSpacing={2}
-            placeholder="Ej: 094 123 456"
-            size="lg"
-            py={14}
-            px={7}
-            w="100%"
-            h="53px"
-            borderColor="#000"
-            color="white"
-            border={0}
-            backgroundColor="#3c3c3c"
-            _focus={{
-              backgroundColor: "#121212"
-            }}
-          />
-
-          {/* LOGIN BUTTON */}
-
-          <Button
-            w="100%"
-            h="53px"
-            bgColor={isValidPhoneNumber ? "#52AF32" : "#888"}
-            borderRadius={50}
-            onPress={handleSendLogin}
-            isLoading={sendingLogin}
-            isLoadingText="Enviando..."
-            _text={{
-              color: "white",
-              fontWeight: "bold",
-              fontSize: 18
-            }}
-          >
+          <Stack space={6} style={flex("column", "center")}>
             <Box
-              display="flex"
-              flexDirection="row"
-              justifyContent="center"
-              alignItems="center"
-              _text={{
-                color: "white",
-                fontWeight: "bold",
-                fontSize: 18
-              }}
+              style={[
+                inputStyle(false, 0, 0),
+                {
+                  position: "realtive",
+                  left: -5,
+                  transform: [{ scaleX: 0.96 }]
+                }
+              ]}
             >
-              Enviar código a WhastApp
-              {!sendingLogin && (
-                <ArrowForwardIcon px={1} size={7} color="#fff" />
-              )}
+              <PhoneInput
+                inputProps={{
+                  name: "phone",
+                  required: true,
+                  autoFocus: true
+                }}
+                masks={{ uy: ".. ... ...", py: "... ......" }}
+                autoFocus={true}
+                country="uy"
+                countryCodeEditable={false}
+                regions={"america"}
+                placeholder="Número de telefono"
+                value={phoneNumber}
+                onChange={setPhoneNumber}
+                containerStyle={{
+                  width: "100%"
+                }}
+                inputStyle={{
+                  ...inputStyle(),
+                  paddingLeft: 60,
+                  backgroundColor: "#eee",
+                  color: "#444"
+                }}
+                buttonStyle={{
+                  backgroundColor: "#fff",
+                  borderLeft: 0,
+                  borderTop: 0,
+                  borderBottom: 0,
+                  paddingRight: 12,
+                  paddingLeft: 12,
+                  borderTopLeftRadius: 10,
+                  borderBottomLeftRadius: 10
+                }}
+              />
             </Box>
-          </Button>
 
-          {/* ERROR MESSAGE */}
+            {/* LOGIN BUTTON */}
 
-          <ErrorMessage
-            error={loginError}
-            handleClose={(_) => setLoginError("")}
-          />
+            <ValidationButton
+              title="Enviar código a WhastApp"
+              isValid={canSendCode}
+              loading={sendingLogin}
+              loadingMsg="Enviando..."
+              onPress={handleSendLogin}
+            />
+          </Stack>
+
+          {/* BOTTOM COLOR */}
         </Stack>
       </FormControl>
+
+      {/* WAVES */}
+
+      {BackWaves()}
+
+      {/* ERROR MESSAGE */}
+
+      <ErrorMessage error={loginError} handleClose={(_) => setLoginError("")} />
     </View>
   );
 };
