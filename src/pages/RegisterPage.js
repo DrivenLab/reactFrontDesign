@@ -162,15 +162,6 @@ const Register = ({ navigation }) => {
             onPress={handleVerifyCode}
           />
 
-          {/* Error message */}
-
-          <ErrorMessage
-            error={verifyError}
-            handleClose={(_) => {
-              setVerifyError("");
-            }}
-          />
-
           {/* Change phone name */}
 
           <Stack space={2} bgColor="#eee" borderRadius={10} p={4} width="100%">
@@ -220,6 +211,15 @@ const Register = ({ navigation }) => {
           </Stack>
         </Stack>
       </FormControl>
+
+      {/* Error message */}
+
+      <ErrorMessage
+        error={verifyError}
+        handleClose={(_) => {
+          setVerifyError("");
+        }}
+      />
       {/* WAVES */}
 
       {BackWaves()}

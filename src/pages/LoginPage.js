@@ -76,7 +76,11 @@ const Login = ({ navigation }) => {
         setLoginError("Error en la conexión, por favor vuelva a intentarlo.");
       setSendingLogin(false);
     } else {
-      setLoginError("Ingrese su numero de celular para continuar");
+      setLoginError(
+        phoneNumber.length > 3
+          ? "El número no es válido."
+          : "Ingrese su numero de celular para continuar."
+      );
     }
   };
 
@@ -85,7 +89,7 @@ const Login = ({ navigation }) => {
       <FormControl>
         <Stack
           space={0}
-          p={5}
+          p={2}
           w="100%"
           style={flex("column", "center")}
           position="relative"
